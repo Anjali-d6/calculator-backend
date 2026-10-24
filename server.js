@@ -8,6 +8,13 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
+// Log every incoming API request
+app.use((req, res, next) => {
+  console.log(
+    `[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`
+  );
+  next();
+});
 
 
 
@@ -133,12 +140,7 @@ app.post("/div", (req, res) => {
 
 
 // Start the server
-app.use((req, res, next) => {
-  console.log(
-    `[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`
-  );
-  next();
-});
+
  // Centralized error-handling middleware
 
  // Centralized error-handling middleware
