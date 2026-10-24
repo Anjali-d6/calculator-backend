@@ -9,10 +9,17 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 // Log every incoming API request
+// Trust Render's reverse proxy
+app.set("trust proxy", 1);
+
+// Log incoming API requests
 app.use((req, res, next) => {
   console.log(
-    `[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`
+    `[${new Date().toISOString()}] ` +
+    `IP: ${req.ip} | ` +
+    `${req.method} ${req.originalUrl}`
   );
+
   next();
 });
 
