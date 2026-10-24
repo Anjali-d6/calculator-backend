@@ -133,7 +133,12 @@ app.post("/div", (req, res) => {
 
 
 // Start the server
-
+app.use((req, res, next) => {
+  console.log(
+    `[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`
+  );
+  next();
+});
  // Centralized error-handling middleware
 
  // Centralized error-handling middleware
