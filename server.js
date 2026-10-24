@@ -1,4 +1,5 @@
-
+const fs = require("fs");
+const path = require("path");
 const express = require("express");
 const cors = require("cors");
 
@@ -137,16 +138,30 @@ app.post("/div", (req, res) => {
 
  // Centralized error-handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  const logDir = path.join(__dirname, "logs");
+
+  // Create logs directory if it doesn't exist
+  if (!fs.existsSync(logDir)) {
+    fs.mkdirSync(logDir, { recursive: true });
+  }
+
+  const logFile = path.join(logDir, "error.log");
+
+  const logMessage =
+    `[${new Date().toISOString()}] ` +
+    `${req.method} ${req.originalUrl}\n` +
+    `${err.stack || err.message || err}\n\n`;
+
+  // Write error to local file and console
+  fs.appendFileSync(logFile, logMessage);
+  console.error(logMessage);
 
   res.status(500).json({
     error: "Internal server error"
   });
 });
+const PORT = process.env.PORT || 5000;
 
-// Start the server
-app.listen(5000, () => {
-  console.log("Server is running on http://localhost:5000");
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server is running on port ${PORT}`);
 });
-
-
